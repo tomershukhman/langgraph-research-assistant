@@ -1,0 +1,22 @@
+[project]
+name = "playground"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "langgraph",
+    "langgraph-prebuilt",
+    "langgraph-sdk",
+    "langgraph-checkpoint-sqlite",
+    "langsmith",
+    "langchain-community",
+    "langchain-core",
+    "langchain-openai",
+    "notebook",
+    "langchain-tavily",
+    "wikipedia",
+    "trustcall",
+    "langgraph-cli[inmem]",
+    "langchain>=1.2.9",
+]

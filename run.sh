@@ -1,0 +1,1 @@
+lsof -ti:2024 | xargs kill -9 && uv run langgraph dev

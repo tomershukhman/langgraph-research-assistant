@@ -1,0 +1,12 @@
+{
+    "dockerfile_lines": [],
+    "graphs": {
+      "analysts": "./Analysts/graph.py:graph",
+      "interview": "./Interview/graph.py:graph"
+    },
+    "python_version": "3.11",
+    "dependencies": [
+      "."
+    ],
+    "env": "./.env"
+  }
