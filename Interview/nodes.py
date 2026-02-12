@@ -21,8 +21,8 @@ def generate_question(state: InterviewState):
     """Node to generate a question"""
 
     # Get state
-    analyst = state["analyst"]
-    messages = state["messages"]
+    analyst = state.analyst
+    messages = state.messages
 
     # Generate question
     system_message = question_instructions.format(goals=analyst.persona)
@@ -37,7 +37,7 @@ def search_web(state: InterviewState):
 
     # Search query
     structured_llm = llm.with_structured_output(SearchQuery)
-    search_query = structured_llm.invoke([search_instructions] + state["messages"])
+    search_query = structured_llm.invoke([search_instructions] + state.messages)
 
     # Search
     data = tavily_search.invoke({"query": search_query.search_query})
@@ -59,7 +59,7 @@ def search_wikipedia(state: InterviewState):
 
     # Search query
     structured_llm = llm.with_structured_output(SearchQuery)
-    search_query = structured_llm.invoke([search_instructions] + state["messages"])
+    search_query = structured_llm.invoke([search_instructions] + state.messages)
 
     # Search
     search_docs = WikipediaLoader(
@@ -81,9 +81,9 @@ def generate_answer(state: InterviewState):
     """Node to answer a question"""
 
     # Get state
-    analyst = state["analyst"]
-    messages = state["messages"]
-    context = state["context"]
+    analyst = state.analyst
+    messages = state.messages
+    context = state.context
 
     # Answer question
     system_message = answer_instructions.format(goals=analyst.persona, context=context)
@@ -100,7 +100,7 @@ def save_interview(state: InterviewState):
     """Save interviews"""
 
     # Get messages
-    messages = state["messages"]
+    messages = state.messages
 
     # Convert interview to a string
     interview = get_buffer_string(messages)
@@ -113,8 +113,8 @@ def route_messages(state: InterviewState, name: str = "expert"):
     """Route between question and answer"""
 
     # Get messages
-    messages = state["messages"]
-    max_num_turns = state.get("max_num_turns", 2)
+    messages = state.messages
+    max_num_turns = state.max_num_turns
 
     # Check the number of expert answers
     num_responses = len(
@@ -138,8 +138,8 @@ def write_section(state: InterviewState):
     """Node to answer a question"""
 
     # Get state
-    context = state["context"]
-    analyst = state["analyst"]
+    context = state.context
+    analyst = state.analyst
 
     # Write section using either the gathered source docs from interview (context) or the interview itself (interview)
     system_message = section_writer_instructions.format(focus=analyst.description)

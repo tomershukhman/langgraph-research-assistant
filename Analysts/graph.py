@@ -30,9 +30,9 @@ analyst_instructions = """You are tasked with creating a set of AI analyst perso
 def create_analysts(state: GenerateAnalystsState):
     """Create analysts"""
 
-    topic = state["topic"]
-    max_analysts = state["max_analysts"]
-    human_analyst_feedback = state.get("human_analyst_feedback", "")
+    topic = state.topic
+    max_analysts = state.max_analysts
+    human_analyst_feedback = state.human_analyst_feedback or ""
 
     # Enforce structured output
     structured_llm = llm.with_structured_output(Perspectives)

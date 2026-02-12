@@ -1,6 +1,6 @@
 from typing import List
 from typing_extensions import TypedDict
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 
 class Analyst(BaseModel):
     affiliation: str = Field(
@@ -15,7 +15,7 @@ class Analyst(BaseModel):
     description: str = Field(
         description="Description of the analyst focus, concerns, and motives.",
     )
-    @property
+    @computed_field
     def persona(self) -> str:
         return f"Name: {self.name}\nRole: {self.role}\nAffiliation: {self.affiliation}\nDescription: {self.description}\n"
 
