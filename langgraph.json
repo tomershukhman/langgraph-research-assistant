@@ -1,11 +1,13 @@
 {
-    "dockerfile_lines": [],
-    "graphs": {
-      "research": "Resercher/graph.py:graph"
-    },
-    "python_version": "3.11",
-    "dependencies": [
-      "."
-    ],
-    "env": "./.env"
-  }
+  "dockerfile_lines": [],
+  "graphs": {
+    "research": "Resercher/main.py:graph",
+    "analysts": "Resercher/Analysts/main.py:graph",
+    "interview": "Resercher/Interview/main.py:graph"
+  },
+  "python_version": "3.11",
+  "dependencies": [
+    "."
+  ],
+  "env": "./.env"
+}

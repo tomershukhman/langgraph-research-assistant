@@ -1,7 +1,6 @@
-from IPython.display import Image, display
 from langgraph.graph import START, END, StateGraph
-from langgraph.checkpoint.memory import MemorySaver
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langgraph.types import interrupt, Command
+from langchain_core.messages import HumanMessage, SystemMessage
 from .state import GenerateAnalystsState
 from .schemas import Perspectives
 from langchain.chat_models import init_chat_model
@@ -12,7 +11,7 @@ llm = init_chat_model(
 )
 
 
-analyst_instructions="""You are tasked with creating a set of AI analyst personas. Follow these instructions carefully:
+analyst_instructions = """You are tasked with creating a set of AI analyst personas. Follow these instructions carefully:
 
 1. First, review the research topic:
 {topic}
@@ -27,47 +26,53 @@ analyst_instructions="""You are tasked with creating a set of AI analyst persona
 
 5. Assign one analyst to each theme."""
 
+
 def create_analysts(state: GenerateAnalystsState):
-    
-    """ Create analysts """
-    
-    topic=state.topic
-    max_analysts=state.max_analysts
-    human_analyst_feedback=state.human_analyst_feedback
-        
+    """Create analysts"""
+
+    topic = state.topic
+    max_analysts = state.max_analysts
+    human_analyst_feedback = state.human_analyst_feedback
+
     # Enforce structured output
     structured_llm = llm.with_structured_output(Perspectives)
 
     # System message
-    system_message = analyst_instructions.format(topic=topic,
-                                                            human_analyst_feedback=human_analyst_feedback, 
-                                                            max_analysts=max_analysts)
+    system_message = analyst_instructions.format(
+        topic=topic,
+        human_analyst_feedback=human_analyst_feedback,
+        max_analysts=max_analysts,
+    )
 
-    # Generate question 
-    analysts = structured_llm.invoke([SystemMessage(content=system_message)]+[HumanMessage(content="Generate the set of analysts.")])
-    
+    # Generate question
+    analysts = structured_llm.invoke(
+        [SystemMessage(content=system_message)]
+        + [HumanMessage(content="Generate the set of analysts.")]
+    )
+
     # Write the list of analysis to state
     return {"analysts": analysts.analysts}
 
+
 def human_feedback(state: GenerateAnalystsState):
-    """ No-op node that should be interrupted on """
-    pass
+    """Interrupt to get human feedback on the generated analysts"""
+    feedback = interrupt(
+        "Please review the analysts above. Provide feedback to regenerate, or approve to proceed."
+    )
+    if feedback:
+        return Command(
+            goto="create_analysts", update={"human_analyst_feedback": feedback}
+        )
+    return Command(goto=END)
 
-def should_continue(state: GenerateAnalystsState):
-    """ Return the next node to execute """
 
-    # Check if human feedback
-    human_analyst_feedback=state.human_analyst_feedback
-    if human_analyst_feedback:
-        return "create_analysts"
-    
-    # Otherwise end
-    return END
-
-# Add nodes and edges 
+# Add nodes and edges
 builder = StateGraph(GenerateAnalystsState)
 builder.add_node("create_analysts", create_analysts)
 builder.add_node("human_feedback", human_feedback)
 builder.add_edge(START, "create_analysts")
 builder.add_edge("create_analysts", "human_feedback")
-builder.add_conditional_edges("human_feedback", should_continue, ["create_analysts", END])
+builder.add_edge("human_feedback", END)
+
+# Compile the graph
+graph = builder.compile()
