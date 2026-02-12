@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from langgraph.graph import add_messages
 from langchain_core.messages import AnyMessage
 import operator
-from Analysts.schemas import Analyst
+from Resercher.Analysts.schemas import Analyst
 
 
 class InterviewState(BaseModel):

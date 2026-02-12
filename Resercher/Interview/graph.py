@@ -1,6 +1,6 @@
 from langgraph.graph import START, END, StateGraph
-from Interview.state import InterviewState
-from Interview.nodes import (
+from .state import InterviewState
+from .nodes import (
     generate_question,
     search_web,
     search_wikipedia,

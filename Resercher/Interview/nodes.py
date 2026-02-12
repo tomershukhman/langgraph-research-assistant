@@ -4,16 +4,16 @@ from langchain_core.messages import (
     HumanMessage,
     SystemMessage,
 )
-from Interview.state import InterviewState
-from Interview.schemas import SearchQuery
-from Interview.configuration import llm
-from Interview.prompts import (
+from .state import InterviewState
+from .schemas import SearchQuery
+from .configuration import llm
+from .prompts import (
     question_instructions,
     search_instructions,
     answer_instructions,
     section_writer_instructions,
 )
-from Interview.tools import tavily_search
+from .tools import tavily_search
 from langchain_community.document_loaders import WikipediaLoader
 
 
