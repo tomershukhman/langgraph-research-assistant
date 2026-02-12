@@ -5,13 +5,15 @@ from .nodes import (
     write_conclusion,
     finalize_report,
 )
-from .state import ResearchGraphState
+from .state import ResearchGraphState, ResearchInput, ResearchOutput
 from langgraph.graph import StateGraph, START, END
 from .Interview.graph import graph as interview_graph
 from .Analysts.graph import graph as analysts_graph
 
 
-builder = StateGraph(ResearchGraphState)
+builder = StateGraph(
+    ResearchGraphState, input_schema=ResearchInput, output_schema=ResearchOutput
+)
 builder.add_node("analysts", analysts_graph)
 builder.add_node("conduct_interview", interview_graph)
 builder.add_node("write_report", write_report)

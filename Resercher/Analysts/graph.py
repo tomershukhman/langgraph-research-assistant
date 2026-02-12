@@ -1,7 +1,7 @@
 from langgraph.graph import START, END, StateGraph
 from langgraph.types import interrupt, Command
 from langchain_core.messages import HumanMessage, SystemMessage
-from .state import GenerateAnalystsState
+from .state import GenerateAnalystsState, AnalystsInput, AnalystsOutput
 from .schemas import Perspectives
 from langchain.chat_models import init_chat_model
 
@@ -67,7 +67,9 @@ def human_feedback(state: GenerateAnalystsState):
 
 
 # Add nodes and edges
-builder = StateGraph(GenerateAnalystsState)
+builder = StateGraph(
+    GenerateAnalystsState, input_schema=AnalystsInput, output_schema=AnalystsOutput
+)
 builder.add_node("create_analysts", create_analysts)
 builder.add_node("human_feedback", human_feedback)
 builder.add_edge(START, "create_analysts")

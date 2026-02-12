@@ -1,5 +1,5 @@
 from langgraph.graph import START, END, StateGraph
-from .state import InterviewState
+from .state import InterviewState, InterviewInput, InterviewOutput
 from .nodes import (
     generate_question,
     search_web,
@@ -14,7 +14,9 @@ from .nodes import (
 def build_graph():
 
     # Add nodes and edges
-    interview_builder = StateGraph(InterviewState)
+    interview_builder = StateGraph(
+        InterviewState, input_schema=InterviewInput, output_schema=InterviewOutput
+    )
     interview_builder.add_node("ask_question", generate_question)
     interview_builder.add_node("search_web", search_web)
     interview_builder.add_node("search_wikipedia", search_wikipedia)
