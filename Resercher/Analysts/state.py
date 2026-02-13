@@ -7,7 +7,6 @@ class AnalystsInput(BaseModel):
     """Input schema for the Analysts subgraph - what the caller must provide."""
 
     topic: str  # Research topic
-    max_analysts: int  # Number of analysts
     human_analyst_feedback: Optional[str] = ""  # Human feedback
 
 
@@ -21,6 +20,6 @@ class GenerateAnalystsState(BaseModel):
     """Internal overall state for the Analysts subgraph."""
 
     topic: str  # Research topic
-    max_analysts: int  # Number of analysts
+    max_analysts: int = 2  # Number of analysts
     human_analyst_feedback: Optional[str] = ""  # Human feedback
     analysts: List[Analyst] = []  # Analyst asking questions

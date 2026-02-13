@@ -8,8 +8,6 @@ class ResearchInput(BaseModel):
     """Input schema for the main Researcher graph - what the user provides."""
 
     topic: str  # Research topic
-    max_analysts: int  # Number of analysts
-    human_analyst_feedback: Optional[str] = ""  # Human feedback
 
 
 class ResearchOutput(BaseModel):
@@ -22,8 +20,6 @@ class ResearchGraphState(BaseModel):
     """Internal overall state for the main Researcher graph."""
 
     topic: str  # Research topic
-    max_analysts: int  # Number of analysts
-    human_analyst_feedback: Optional[str] = ""  # Human feedback
     analysts: Optional[List[Analyst]] = None  # Analyst asking questions
     sections: Annotated[list, operator.add] = []  # Send() API key
     introduction: str = ""  # Introduction for the final report
