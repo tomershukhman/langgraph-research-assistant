@@ -19,4 +19,5 @@ dependencies = [
     "trustcall",
     "langgraph-cli[inmem]",
     "langchain>=1.2.9",
+    "openevals>=0.1.3",
 ]
