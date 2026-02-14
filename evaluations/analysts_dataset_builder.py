@@ -7,7 +7,9 @@ Each example simulates a full agent run including human-in-the-loop feedback.
 Inputs match AnalystsInput state: {topic, max_analysts, human_feedback}
 Outputs match AnalystsOutput state: {analysts: [{name, role, affiliation, description}, ...]}
 """
+from dotenv import load_dotenv
 
+load_dotenv()  
 from langsmith import Client
 
 
