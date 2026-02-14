@@ -3,12 +3,7 @@ from langgraph.types import interrupt, Command
 from langchain_core.messages import HumanMessage, SystemMessage
 from .state import GenerateAnalystsState, AnalystsInput, AnalystsOutput
 from .schemas import Perspectives
-from langchain.chat_models import init_chat_model
-
-llm = init_chat_model(
-    model="gpt-5-nano",
-    temperature=0,
-)
+from ..configuration import llm
 
 
 analyst_instructions = """You are tasked with creating a set of AI analyst personas. Follow these instructions carefully:
