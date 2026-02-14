@@ -89,5 +89,33 @@ The project uses a centralized configuration in `Researcher/configuration.py`:
 - Environment variable support for model selection
 - Consistent temperature settings
 
+## Testing
+
+### Analysts Agent Evaluation
+
+The Analysts agent includes a comprehensive evaluation suite using LangSmith and openevals. The evaluation tests the full agent graph including the human-in-the-loop interrupt flow.
+
+**What's Tested:**
+- Direct approval flow: topic → generate analysts → approve
+- Feedback loop: topic → generate → feedback → regenerate → approve
+
+**Evaluators:**
+- `analyst_relevance` (LLM-as-judge): Validates analysts are relevant to the research topic
+- `analyst_count` (code-based): Ensures count doesn't exceed `max_analysts` parameter
+- `schema_completeness` (code-based): Verifies all required fields are non-empty
+
+**Running the tests:**
+
+```bash
+# 1. Create the evaluation dataset in LangSmith (one-time)
+uv run -m evaluations.analysts_dataset_builder
+
+# 2. Run the evaluation
+uv run -m evaluations.run_analysts_evaluation
+```
+
+View results in your [LangSmith dashboard](https://smith.langchain.com) under the "Analysts Generation Eval" dataset.
+
+For more details, see [`evaluations/README.md`](evaluations/README.md).
 
 
