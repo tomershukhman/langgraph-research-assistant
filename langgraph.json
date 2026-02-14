@@ -1,9 +1,9 @@
 {
   "dockerfile_lines": [],
   "graphs": {
-    "research": "Resercher/main.py:graph",
-    "analysts": "Resercher/Analysts/main.py:graph",
-    "interview": "Resercher/Interview/main.py:graph"
+    "research": "Researcher/main.py:graph",
+    "analysts": "Researcher/Analysts/main.py:graph",
+    "interview": "Researcher/Interview/main.py:graph"
   },
   "python_version": "3.11",
   "dependencies": [

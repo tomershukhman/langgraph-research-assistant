@@ -4,16 +4,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from Resercher.Analysts.graph import graph as analysts_graph
-from Resercher.Analysts.state import (
+from Researcher.Analysts.graph import graph as analysts_graph
+from Researcher.Analysts.state import (
     AnalystsInput,
     AnalystsOutput,
     GenerateAnalystsState,
 )
-from Resercher.Interview.graph import graph as interview_graph
-from Resercher.Interview.state import InterviewInput, InterviewOutput, InterviewState
-from Resercher.graph import graph as researcher_graph
-from Resercher.state import ResearchInput, ResearchOutput, ResearchGraphState
+from Researcher.Interview.graph import graph as interview_graph
+from Researcher.Interview.state import InterviewInput, InterviewOutput, InterviewState
+from Researcher.graph import graph as researcher_graph
+from Researcher.state import ResearchInput, ResearchOutput, ResearchGraphState
 
 
 def check_graph(name, graph, expected_input, expected_output):
