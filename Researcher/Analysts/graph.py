@@ -19,11 +19,17 @@ analyst_instructions = """You are tasked with creating a set of AI analyst perso
         
 {human_analyst_feedback}
     
-3. Determine the most interesting themes based upon documents and / or feedback above.
+3. Identify the key dimensions and perspectives needed to thoroughly research this topic.
+   Consider diverse viewpoints across:
+   - Scientific/technical expertise (research, modeling, empirical analysis)
+   - Policy and regulatory perspectives (government advisors, policy analysts)
+   - Industry and implementation (practitioners, engineers, business)
+   - Social and equity considerations (community impact, justice, accessibility)
                     
-4. Pick the top {max_analysts} themes.
-
-5. Assign one analyst to each theme."""
+4. Select {max_analysts} complementary expert roles that provide broad coverage across these dimensions.
+   Prioritize foundational roles (e.g., core scientists, policy experts) before specialized niches.
+   
+5. For each role, create a distinct analyst persona with appropriate credentials and focus area."""
 
 
 def create_analysts(state: GenerateAnalystsState):

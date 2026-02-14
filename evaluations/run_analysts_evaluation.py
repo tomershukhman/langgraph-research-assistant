@@ -14,6 +14,7 @@ from langsmith import Client
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.types import Command
 from openevals.llm import create_llm_as_judge
+from openevals.prompts import ANSWER_RELEVANCE_PROMPT, CORRECTNESS_PROMPT
 
 from Researcher.Analysts.graph import builder
 from evaluations.analysts_dataset_builder import DATASET_NAME
@@ -74,36 +75,11 @@ def run_analysts_agent(inputs: dict) -> dict:
 
 # 1. LLM-as-judge: Are the analysts relevant to the topic?
 relevance_evaluator = create_llm_as_judge(
-    prompt=(
-        "You are evaluating whether AI-generated analyst personas are relevant to a research topic.\n\n"
-        "RESEARCH TOPIC:\n{inputs}\n\n"
-        "GENERATED ANALYSTS:\n{outputs}\n\n"
-        "Evaluate whether the generated analysts are relevant and appropriate for researching the given topic. "
-        "Consider:\n"
-        "- Are the analysts' roles related to the topic?\n"
-        "- Are their affiliations plausible for the topic area?\n"
-        "- Do their descriptions show relevant expertise?\n\n"
-        "Return true if the analysts are relevant, false otherwise."
-    ),
+    prompt=ANSWER_RELEVANCE_PROMPT,
     feedback_key="analyst_relevance",
     model=MODEL,
 )
 
-# 2. LLM-as-judge: For feedback examples, did the agent incorporate the feedback?
-feedback_incorporation_evaluator = create_llm_as_judge(
-    prompt=(
-        "You are evaluating whether an AI agent incorporated human feedback when regenerating analyst personas.\n\n"
-        "ORIGINAL TOPIC:\n{inputs}\n\n"
-        "GENERATED ANALYSTS (after feedback):\n{outputs}\n\n"
-        "REFERENCE ANALYSTS (expected):\n{reference_outputs}\n\n"
-        "Evaluate whether the generated analysts reflect similar themes, expertise areas, "
-        "and perspectives as the reference analysts. The names and exact wording don't need to match, "
-        "but the overall focus and coverage should be similar.\n\n"
-        "Return true if the feedback was reasonably incorporated, false otherwise."
-    ),
-    feedback_key="feedback_incorporation",
-    model=MODEL,
-)
 
 
 # 3. Code-based: Check analyst count
@@ -165,7 +141,6 @@ def run_evaluation():
     # Determine which evaluators to use based on each example
     evaluators = [
         relevance_evaluator,
-        feedback_incorporation_evaluator,
         analyst_count_evaluator,
         schema_completeness_evaluator,
     ]
