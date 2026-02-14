@@ -35,7 +35,7 @@ Conducts research interviews where analysts ask questions, search for informatio
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/tomershukhman/langgraph-research-assistant
 cd playground
 
 # Install dependencies using uv
@@ -59,8 +59,6 @@ Required environment variables:
 ```bash
 # Start the development server
 langgraph dev
-
-# Access the UI at http://localhost:8123
 ```
 
 ### Running Programmatically
@@ -76,33 +74,6 @@ result = graph.invoke({
 print(result["final_report"])
 ```
 
-## Project Structure
-
-```
-playground/
-├── Researcher/                  # Main package
-│   ├── __init__.py
-│   ├── graph.py                # Main research graph
-│   ├── state.py                # State schemas
-│   ├── nodes.py                # Node functions
-│   ├── prompts.py              # LLM prompts
-│   ├── configuration.py        # Shared configuration
-│   ├── Analysts/              # Analyst generation subgraph
-│   │   ├── graph.py
-│   │   ├── state.py
-│   │   └── schemas.py
-│   └── Interview/             # Interview subgraph
-│       ├── graph.py
-│       ├── state.py
-│       ├── nodes.py
-│       ├── prompts.py
-│       ├── schemas.py
-│       └── tools.py
-├── langgraph.json             # LangGraph configuration
-├── pyproject.toml             # Project dependencies
-└── README.md                  # This file
-```
-
 ## Key Features
 
 - **Multi-perspective Analysis**: Generates multiple AI analysts with different viewpoints
@@ -111,18 +82,6 @@ playground/
 - **Web & Wikipedia Search**: Retrieves relevant information from multiple sources
 - **Structured Output**: Generates well-formatted research reports
 
-## Development
-
-### Verification Scripts
-
-```bash
-# Verify imports
-uv run python test_imports.py
-
-# Verify schema configuration
-uv run python verify_schemas.py
-```
-
 ### Configuration
 
 The project uses a centralized configuration in `Researcher/configuration.py`:
@@ -130,21 +89,5 @@ The project uses a centralized configuration in `Researcher/configuration.py`:
 - Environment variable support for model selection
 - Consistent temperature settings
 
-## Best Practices Implemented
 
-This codebase follows LangGraph and Python best practices:
 
-✅ **State Management**: Separate input, output, and internal state schemas  
-✅ **Type Safety**: Comprehensive type hints and Pydantic validation  
-✅ **Documentation**: Module and function docstrings throughout  
-✅ **Configuration**: Centralized configuration with environment variable support  
-✅ **Error Handling**: Proper exception handling with specific error cases  
-✅ **Code Quality**: Extracted constants, meaningful names, clear structure
-
-## License
-
-[Add your license here]
-
-## Contributing
-
-[Add contribution guidelines here]

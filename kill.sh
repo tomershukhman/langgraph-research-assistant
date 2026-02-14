@@ -1,1 +1,0 @@
-lsof -ti:2024 | xargs kill -9

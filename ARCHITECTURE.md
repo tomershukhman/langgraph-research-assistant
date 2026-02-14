@@ -27,7 +27,7 @@ Initiate Interviews (Send API - parallel execution)
   ↓
 Write Report Components (parallel)
   ├── write_introduction
-  ├── write_content
+  ├── write_report
   └── write_conclusion
   ↓
 Finalize Report (reduce step)

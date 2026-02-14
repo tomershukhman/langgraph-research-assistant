@@ -10,4 +10,7 @@ wheels/
 .venv
 .langgraph_api
 
+# Environment variables
+.env
+
 **/*.log

@@ -5,7 +5,7 @@
     "analysts": "Researcher/Analysts/main.py:graph",
     "interview": "Researcher/Interview/main.py:graph"
   },
-  "python_version": "3.11",
+  "python_version": "3.13",
   "dependencies": [
     "."
   ],
