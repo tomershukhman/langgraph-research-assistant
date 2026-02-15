@@ -151,35 +151,76 @@ EXAMPLES = [
 ]
 
 
-def create_dataset():
-    """Create or update the Analysts evaluation dataset in LangSmith."""
+def sync_dataset(dataset_name: str, local_examples: list[dict], delete_obsolete: bool = True):
+    """
+    Syncs a local list of examples to LangSmith.
+    - Creates new examples.
+    - Updates existing examples (if inputs/outputs changed).
+    - Deletes remote examples that are no longer in the local list.
+    """
     client = Client()
 
-    # Check if dataset already exists
-    existing = list(client.list_datasets(dataset_name=DATASET_NAME))
-    if existing:
-        print(
-            f"Dataset '{DATASET_NAME}' already exists (id={existing[0].id}). Skipping creation."
-        )
-        print("Delete it in LangSmith UI if you want to recreate it.")
-        return existing[0]
+    # 1. Get or Create Dataset
+    if client.has_dataset(dataset_name=dataset_name):
+        dataset = client.read_dataset(dataset_name=dataset_name)
+        print(f"🔹 Found dataset '{dataset_name}' (ID: {dataset.id})")
+    else:
+        dataset = client.create_dataset(dataset_name=dataset_name)
+        print(f"🔹 Created dataset '{dataset_name}' (ID: {dataset.id})")
 
-    # Create the dataset
-    dataset = client.create_dataset(
-        dataset_name=DATASET_NAME,
-        description=DATASET_DESCRIPTION,
-    )
-    print(f"Created dataset '{DATASET_NAME}' (id={dataset.id})")
+    # 2. Fetch Remote Data & Index by Key
+    # Assumes 'topic' is the unique key in inputs. Change if needed.
+    remote_examples = list(client.list_examples(dataset_id=dataset.id))
+    remote_map = {r.inputs["topic"]: r for r in remote_examples}
+    
+    local_map = {e["inputs"]["topic"]: e for e in local_examples}
+    
+    # 3. Determine Actions
+    local_topics = set(local_map.keys())
+    remote_topics = set(remote_map.keys())
 
-    # Add examples
-    client.create_examples(
-        dataset_id=dataset.id,
-        examples=EXAMPLES,
-    )
-    print(f"Added {len(EXAMPLES)} examples to dataset")
+    to_create = local_topics - remote_topics
+    to_update = local_topics & remote_topics
+    to_delete = remote_topics - local_topics
 
-    return dataset
+    print(f"Syncing: {len(to_create)} to create, {len(to_update)} to check/update, {len(to_delete)} to delete.")
+
+    # 4. Execute Actions
+    
+    # A) CREATE (Batch)
+    if to_create:
+        batch_create = [local_map[topic] for topic in to_create]
+        client.create_examples(dataset_id=dataset.id, examples=batch_create)
+        print(f"✅ Created {len(batch_create)} new examples.")
+
+    # B) UPDATE (Iterative check to minimize API calls)
+    updates_count = 0
+    for topic in to_update:
+        local_ex = local_map[topic]
+        remote_ex = remote_map[topic]
+
+        # Only update if content actually changed
+        if (local_ex["inputs"] != remote_ex.inputs or 
+            local_ex["outputs"] != remote_ex.outputs):
+            
+            client.update_example(
+                example_id=remote_ex.id,
+                inputs=local_ex["inputs"],
+                outputs=local_ex["outputs"]
+            )
+            updates_count += 1
+            print(f"   Updated: {topic}")
+    
+    if updates_count == 0 and to_update:
+        print("   (No existing examples needed updates)")
+
+    # C) DELETE (Batch)
+    if delete_obsolete and to_delete:
+        # Note: client.delete_examples takes a list of IDs
+        ids_to_delete = [remote_map[topic].id for topic in to_delete]
+        client.delete_examples(example_ids=ids_to_delete)
+        print(f"🗑️ Deleted {len(ids_to_delete)} obsolete examples.")
 
 
 if __name__ == "__main__":
-    create_dataset()
+    sync_dataset(DATASET_NAME, EXAMPLES)
